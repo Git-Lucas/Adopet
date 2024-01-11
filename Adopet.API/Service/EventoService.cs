@@ -1,5 +1,5 @@
 ﻿using Adopet.API.Dados.Context;
-using Alura.Adopet.API.Dominio.Entity;
+using Adopet.API.Dominio.Entity;
 
 namespace Adopet.API.Service
 {

@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Adopet.Console;
+using Adopet.Console.ExecuteActions;
 
 HttpClient client = ConfiguraHttpClient("http://localhost:5057");
 Console.ForegroundColor = ConsoleColor.Green;
@@ -10,38 +11,8 @@ try
     switch (initialCommand)
     {
         case "import":
-            List<Pet> listaDePet = [];
-
-            string pathFileToImport = args[1];
-            using (StreamReader sr = new(pathFileToImport))
-            {
-                Console.WriteLine("----- Dados importados -----");
-                while (!sr.EndOfStream)
-                {
-                    // separa linha usando ponto e vírgula
-                    string[]? propriedades = sr.ReadLine().Split(';');
-                    // cria objeto Pet a partir da separação
-                    Pet pet = new Pet(Guid.Parse(propriedades[0]),
-                      propriedades[1],
-                      int.Parse(propriedades[2]) == 1 ? TipoPet.Gato : TipoPet.Cachorro
-                     );
-
-                    Console.WriteLine(pet);
-                    listaDePet.Add(pet);
-                }
-            }
-            foreach (var pet in listaDePet)
-            {
-                try
-                {
-                    var resposta = await CreatePetAsync(pet);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            Console.WriteLine("Importação concluída!");
+            Import import = new();
+            await import.ExecuteAsync(pathFileToImport: args[1]);
             break;
         case "help":     
             // se não passou mais nenhum argumento mostra help de todos os comandos
