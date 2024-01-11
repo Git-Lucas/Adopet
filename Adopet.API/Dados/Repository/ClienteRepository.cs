@@ -19,7 +19,7 @@ namespace Adopet.API.Dados.Repository
             return _cliente;
         }
 
-        public Cliente Atualizar(int id, Cliente _cliente)
+        public Cliente? Atualizar(int id, Cliente _cliente)
         {
             var _obj = ObterPorId(_cliente.Id);
             if (_obj == null)

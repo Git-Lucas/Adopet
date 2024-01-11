@@ -24,11 +24,11 @@ builder.Services.AddScoped<ClienteRepository>()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Adicionando serviços.
-var serviceProvider = builder.Services.BuildServiceProvider();
-var eventoService = serviceProvider.GetService<IEventoService>();
-
 var app = builder.Build();
+
+//Adicionando serviços.
+using IServiceScope serviceScope = app.Services.CreateScope();
+var eventoService = serviceScope.ServiceProvider.GetRequiredService<IEventoService>();
 eventoService.GenerateFakeDate();
 
 // Ativando o Swagger

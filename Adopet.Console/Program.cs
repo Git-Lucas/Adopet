@@ -55,9 +55,9 @@ try
                 while (!sr.EndOfStream)
                 {
                     // separa linha usando ponto e vírgula
-                    string[]? propriedades = sr.ReadLine().Split(';');
+                    string[] propriedades = sr.ReadLine()!.Split(';');
                     // cria objeto Pet a partir da separação
-                    Pet pet = new Pet(Guid.Parse(propriedades[0]),
+                    Pet pet = new(Guid.Parse(propriedades[0]),
                     propriedades[1],
                     int.Parse(propriedades[2])==1?TipoPet.Gato:TipoPet.Cachorro
                     );
@@ -68,7 +68,7 @@ try
         case "list":
             IEnumerable<Pet>? pets = await ListPetsAsync();
             Console.WriteLine("----- Lista de Pets importados no sistema -----");
-            foreach (var pet in pets)
+            foreach (var pet in pets!)
             {
                 Console.WriteLine(pet);
             }
@@ -92,20 +92,12 @@ finally
 
 HttpClient ConfiguraHttpClient(string url)
 {
-    HttpClient _client = new HttpClient();
+    HttpClient _client = new();
     _client.DefaultRequestHeaders.Accept.Clear();
     _client.DefaultRequestHeaders.Accept.Add(
         new MediaTypeWithQualityHeaderValue("application/json"));
     _client.BaseAddress = new Uri(url);
     return _client;
-}
-Task<HttpResponseMessage> CreatePetAsync(Pet pet)
-{
-    HttpResponseMessage? response = null;
-    using (response = new HttpResponseMessage())
-    {
-        return client.PostAsJsonAsync("pet/add", pet);
-    }
 }
 async Task<IEnumerable<Pet>?> ListPetsAsync()
 {

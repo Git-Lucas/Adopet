@@ -21,9 +21,9 @@ internal class Import
             while (!sr.EndOfStream)
             {
                 // separa linha usando ponto e vírgula
-                string[]? propriedades = sr.ReadLine().Split(';');
+                string[]? propriedades = sr.ReadLine()!.Split(';');
                 // cria objeto Pet a partir da separação
-                Pet pet = new Pet(Guid.Parse(propriedades[0]),
+                Pet pet = new(Guid.Parse(propriedades[0]),
                   propriedades[1],
                   int.Parse(propriedades[2]) == 1 ? TipoPet.Gato : TipoPet.Cachorro
                  );
@@ -48,16 +48,13 @@ internal class Import
 
     Task<HttpResponseMessage> CreatePetAsync(Pet pet)
     {
-        HttpResponseMessage? response = null;
-        using (response = new HttpResponseMessage())
-        {
-            return _client.PostAsJsonAsync("pet/add", pet);
-        }
+        using HttpResponseMessage response = new();
+        return _client.PostAsJsonAsync("pet/add", pet);
     }
 
     HttpClient ConfiguraHttpClient(string url)
     {
-        HttpClient _client = new HttpClient();
+        HttpClient _client = new();
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
