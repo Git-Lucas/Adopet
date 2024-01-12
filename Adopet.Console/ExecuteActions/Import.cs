@@ -1,42 +1,33 @@
-﻿using System.Net.Http.Headers;
+﻿using Adopet.Console.Attributes;
+using Adopet.Console.Services;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Adopet.Console.ExecuteActions;
-internal class Import
+
+[Command(command: "import", documentation: "adopet import <ARQUIVO> comando que realiza a importação do arquivo de pets.")]
+public class Import
 {
     private readonly HttpClient _client;
+    private readonly FileReader _fileReader;
 
     public Import()
     {
         _client = ConfiguraHttpClient("http://localhost:5057");
+        _fileReader = new FileReader();
     }
 
-    internal async Task ExecuteAsync(string pathFileToImport)
+    public async Task ExecuteAsync(string pathFileToImport)
     {
-        List<Pet> listaDePet = [];
+        List<Pet> pets = _fileReader.Execute(pathFileToImport);
 
-        using (StreamReader sr = new(pathFileToImport))
+        foreach (Pet pet in pets)
         {
-            System.Console.WriteLine("----- Dados importados -----");
-            while (!sr.EndOfStream)
-            {
-                // separa linha usando ponto e vírgula
-                string[]? propriedades = sr.ReadLine().Split(';');
-                // cria objeto Pet a partir da separação
-                Pet pet = new Pet(Guid.Parse(propriedades[0]),
-                  propriedades[1],
-                  int.Parse(propriedades[2]) == 1 ? TipoPet.Gato : TipoPet.Cachorro
-                 );
+            System.Console.WriteLine(pet);
 
-                System.Console.WriteLine(pet);
-                listaDePet.Add(pet);
-            }
-        }
-        foreach (var pet in listaDePet)
-        {
             try
             {
-                var resposta = await CreatePetAsync(pet);
+                HttpResponseMessage resposta = await CreatePetAsync(pet);
             }
             catch (Exception ex)
             {
@@ -46,22 +37,20 @@ internal class Import
         System.Console.WriteLine("Importação concluída!");
     }
 
-    Task<HttpResponseMessage> CreatePetAsync(Pet pet)
+    private async Task<HttpResponseMessage> CreatePetAsync(Pet pet)
     {
-        HttpResponseMessage? response = null;
-        using (response = new HttpResponseMessage())
-        {
-            return _client.PostAsJsonAsync("pet/add", pet);
-        }
+        using HttpResponseMessage response = new();
+        return await _client.PostAsJsonAsync("pet/add", pet);
     }
 
-    HttpClient ConfiguraHttpClient(string url)
+    private HttpClient ConfiguraHttpClient(string url)
     {
-        HttpClient _client = new HttpClient();
+        HttpClient _client = new();
+
         _client.DefaultRequestHeaders.Accept.Clear();
-        _client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         _client.BaseAddress = new Uri(url);
+        
         return _client;
     }
 }

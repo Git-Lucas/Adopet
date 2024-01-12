@@ -19,7 +19,7 @@ namespace Adopet.API.Dados.Repository
             return _pet;
         }
 
-        public Pet Atualizar(int id, Pet _pet)
+        public Pet? Atualizar(int id, Pet _pet)
         {
             var _obj = ObterPorId(_pet.Id);
             if (_obj == null)
