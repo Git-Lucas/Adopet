@@ -1,7 +1,10 @@
-﻿using System.Net.Http.Headers;
+﻿using Adopet.Console.Attributes;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Adopet.Console.ExecuteActions;
+
+[Command(command: "list", documentation: "adopet list comando que exibe no terminal o conteúdo cadastrado na base de dados da AdoPet.")]
 public class ListAction
 {
     private readonly HttpClient _client;

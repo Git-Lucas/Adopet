@@ -1,7 +1,9 @@
-﻿using Adopet.Console.Services;
+﻿using Adopet.Console.Attributes;
+using Adopet.Console.Services;
 
 namespace Adopet.Console.ExecuteActions;
 
+[Command(command: "show", documentation: "adopet show <ARQUIVO> comando que exibe no terminal o conteúdo do arquivo importado.")]
 public class Show
 {
     private readonly FileReader _fileReader;

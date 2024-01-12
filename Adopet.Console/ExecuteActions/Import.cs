@@ -1,8 +1,11 @@
-﻿using Adopet.Console.Services;
+﻿using Adopet.Console.Attributes;
+using Adopet.Console.Services;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Adopet.Console.ExecuteActions;
+
+[Command(command: "import", documentation: "adopet import <ARQUIVO> comando que realiza a importação do arquivo de pets.")]
 public class Import
 {
     private readonly HttpClient _client;
