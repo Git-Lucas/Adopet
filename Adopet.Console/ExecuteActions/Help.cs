@@ -7,7 +7,7 @@ namespace Adopet.Console.ExecuteActions;
     command: "help", 
     documentation: "adopet help comando que exibe informações da ajuda.\n" +
                    "adopet help <NOME_COMANDO> para acessar a ajuda de um comando específico.")]
-public class Help
+public class Help : IAction
 {
     private readonly Dictionary<string, CommandAttribute> _commands;
 
@@ -21,7 +21,7 @@ public class Help
             .ToDictionary(x => x.Command);
     }
 
-    public void Execute(string[] args)
+    public Task ExecuteAsync(string[] args)
     {
         if (args.Length == 1)
         {
@@ -43,5 +43,7 @@ public class Help
                 System.Console.WriteLine(value.Documentation);
             }
         }
+
+        return Task.CompletedTask;
     }
 }

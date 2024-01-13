@@ -1,39 +1,25 @@
 ﻿using Adopet.Console.ExecuteActions;
 
+Dictionary<string, IAction> actionsSystem = new()
+{
+    { "help", new Help() },
+    { "import", new Import() },
+    { "list", new ListAction() },
+    { "show", new Show() },
+};
+
 Console.ForegroundColor = ConsoleColor.Green;
 try
 {
-    string initialCommand = args[0].Trim();
-    switch (initialCommand)
+    string initialCommandByUser = args[0].Trim();
+
+    if (actionsSystem.TryGetValue(initialCommandByUser, out IAction? action))
     {
-        case "import":
-            Import import = new();
-            await import.ExecuteAsync(pathFileToImport: args[1]);
-
-            break;
-
-        case "help":
-            Help help = new();
-            help.Execute(args);
-
-            break;
-
-        case "show":
-            Show show = new();
-            show.Execute(pathFileToDisplay: args[1]);
-            
-            break;
-
-        case "list":
-            ListAction list = new();
-            await list.ExecuteAsync();
-            
-            break;
-
-        default:
-            Console.WriteLine("Comando inválido!");
-
-            break;
+        await action.ExecuteAsync(args);
+    }
+    else
+    {
+        Console.WriteLine("Comando inválido.");
     }
 }
 catch (Exception ex)

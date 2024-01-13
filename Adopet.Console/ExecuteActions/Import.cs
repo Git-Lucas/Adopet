@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 namespace Adopet.Console.ExecuteActions;
 
 [Command(command: "import", documentation: "adopet import <ARQUIVO> comando que realiza a importação do arquivo de pets.")]
-public class Import
+public class Import : IAction
 {
     private readonly HttpClient _client;
     private readonly FileReader _fileReader;
@@ -17,8 +17,9 @@ public class Import
         _fileReader = new FileReader();
     }
 
-    public async Task ExecuteAsync(string pathFileToImport)
+    public async Task ExecuteAsync(string[] args)
     {
+        string pathFileToImport = args[1];
         List<Pet> pets = _fileReader.Execute(pathFileToImport);
 
         foreach (Pet pet in pets)

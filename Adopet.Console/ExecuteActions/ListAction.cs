@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 namespace Adopet.Console.ExecuteActions;
 
 [Command(command: "list", documentation: "adopet list comando que exibe no terminal o conteúdo cadastrado na base de dados da AdoPet.")]
-public class ListAction
+public class ListAction : IAction
 {
     private readonly HttpClient _client;
 
@@ -14,10 +14,13 @@ public class ListAction
         _client = ConfiguraHttpClient("http://localhost:5057");
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(string[] args)
     {
-        IEnumerable<Pet>? pets = await ListPetsAsync();
+        Task<IEnumerable<Pet>?> getPetsTask = ListPetsAsync();
+        
         System.Console.WriteLine("----- Lista de Pets importados no sistema -----");
+        
+        IEnumerable<Pet>? pets = await getPetsTask;
         foreach (var pet in pets!)
         {
             System.Console.WriteLine(pet);
